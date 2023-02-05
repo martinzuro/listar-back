@@ -1,0 +1,41 @@
+{
+  "defaultEnv": "dev",
+  "dev": {
+    "host": "localhost",
+    "user": "newuser",
+    "password": "newpassword",
+    "database": "listar",
+    "driver": "mysql",
+    "multipleStatements": true
+  },
+
+  "test": {
+    "driver": "sqlite3",
+    "filename": ":memory:"
+  },
+
+  "prod": {
+    "driver": "mysql",
+    "user": "root",
+    "password": "root"
+  },
+
+  "pg": {
+    "driver": "pg",
+    "user": "test",
+    "password": "test",
+    "host": "localhost",
+    "database": "mydb",
+    "port": "20144",
+    "ssl": "true",
+    "schema": "my_schema"
+  },
+
+  "mongo": {
+    "driver": "mongodb",
+    "database": "my_db",
+    "host": "localhost"
+  },
+
+  "other": "postgres://uname:pw@server.com/dbname"
+}
