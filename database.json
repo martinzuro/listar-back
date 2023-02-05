@@ -1,12 +1,13 @@
 {
   "defaultEnv": "dev",
   "dev": {
-    "host": "localhost",
-    "user": "newuser",
-    "password": "newpassword",
-    "database": "listar",
-    "driver": "mysql",
-    "multipleStatements": true
+    "multipleStatements": true,
+    "driver": {"ENV": "DB_CONNECTION"},
+    "host": {"ENV": "DB_HOST"},
+    "port": {"ENV": "DB_PORT"},
+    "database": {"ENV": "DB_DATABASE"},
+    "user": {"ENV": "DB_USERNAME"},
+    "password": {"ENV": "DB_PASSWORD"}
   },
 
   "test": {
@@ -15,9 +16,12 @@
   },
 
   "prod": {
-    "driver": "mysql",
-    "user": "root",
-    "password": "root"
+    "driver": {"ENV": "DB_CONNECTION"},
+    "host": {"ENV": "DB_HOST"},
+    "port": {"ENV": "DB_PORT"},
+    "database": {"ENV": "DB_DATABASE"},
+    "user": {"ENV": "DB_USERNAME"},
+    "password": {"ENV": "DB_PASSWORD"}
   },
 
   "pg": {
