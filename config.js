@@ -1,9 +1,9 @@
 const config = {
     db: {
-        host: 'localhost',
-        user: 'newuser',
-        password: 'newpassword',
-        database: 'listar'
+        host: process.env.DB_HOST,
+        user: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
     },
     listPerPage: 10,
   };

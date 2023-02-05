@@ -16,9 +16,12 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
   db.createTable('lists', {
-    id: { type: 'int', primaryKey: true, unsigned: true, notNull: true, autoIncrement: true, length: 10 },
-    uuid: { type: 'string', unique: true, notNull: true, length: 100 },
-    title: 'string'
+    columns: {
+      id: { type: 'int', primaryKey: true, unsigned: true, notNull: true, autoIncrement: true, length: 10 },
+      uuid: { type: 'string', unique: true, notNull: true, length: 100 },
+      title: { type: 'string', notNull: true },
+    },
+    ifNotExists: true
   }, callback);
 };
 

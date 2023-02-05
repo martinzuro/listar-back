@@ -16,23 +16,26 @@ exports.setup = function(options, seedLink) {
 
 exports.up = function(db, callback) {
   db.createTable('items', {
-    id: { type: 'int', primaryKey: true, unsigned: true, notNull: true, autoIncrement: true, length: 10 },
-    list_id: {
-      type: 'int',
-      unsigned: true,
-      length: 10,
-      notNull: true,
-      foreignKey: {
-        name: 'items_list_id_fk',
-        table: 'lists',
-        rules: {
-          onDelete: 'CASCADE',
-          onUpdate: 'RESTRICT'
+    columns: {
+      id: { type: 'int', primaryKey: true, unsigned: true, notNull: true, autoIncrement: true, length: 10 },
+      name: { type: 'string', notNull: true },
+      list_id: {
+        type: 'int',
+        unsigned: true,
+        length: 10,
+        notNull: true,
+        foreignKey: {
+          name: 'items_list_id_fk',
+          table: 'lists',
+          rules: {
+            onDelete: 'CASCADE',
+            onUpdate: 'RESTRICT'
+          },
+          mapping: 'id'
         },
-        mapping: 'id'
       },
     },
-    name: { type: 'string', notNull: true },
+    ifNotExists: true
   }, callback);
 };
 
