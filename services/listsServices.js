@@ -37,7 +37,9 @@ async function getOne(uuid){
   );
 
   const data = {
-    list, items
+    uuid: list.uuid,
+    title: list.title,
+    items
   }
 
   return {
