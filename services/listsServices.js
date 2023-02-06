@@ -4,7 +4,7 @@ const config = require('../config');
 
 async function getMultiple(page = 1){
   const offset = helper.getOffset(page, config.listPerPage);
-  const rows = await db.query(
+  const [rows] = await db.query(
     `SELECT uuid, title 
     FROM lists LIMIT ${offset},${config.listPerPage}`
   );
@@ -18,7 +18,7 @@ async function getMultiple(page = 1){
 }
 
 async function getOne(uuid){
-  const lists = await db.query(
+  const [lists] = await db.query(
     `SELECT * 
     FROM lists 
     WHERE uuid='${uuid}'`
@@ -30,7 +30,7 @@ async function getOne(uuid){
   }
   const list = lists[0];
 
-  const items = await db.query(
+  const [items] = await db.query(
     `SELECT * 
     FROM items 
     WHERE list_id='${list.id}'`
@@ -48,7 +48,7 @@ async function getOne(uuid){
 }
 
 async function create(list){
-  const result = await db.query(
+  const [result] = await db.query(
       `INSERT INTO lists 
       (title, uuid) 
       VALUES 
@@ -59,7 +59,7 @@ async function create(list){
   let data = {};
 
   if (result.affectedRows) {
-    const rows = await db.query(`SELECT * FROM lists WHERE id=${result.insertId}`);
+    const [rows] = await db.query(`SELECT * FROM lists WHERE id=${result.insertId}`);
     data = rows[0];
     message = 'List created successfully';
   }
@@ -68,7 +68,7 @@ async function create(list){
 }
 
 async function update(uuid, list){
-  const result = await db.query(
+  const [result] = await db.query(
     `UPDATE lists 
     SET title="${list.title}"
     WHERE uuid='${uuid}'` 
@@ -84,7 +84,7 @@ async function update(uuid, list){
 }
 
 async function remove(uuid){
-  const result = await db.query(
+  const [result] = await db.query(
     `DELETE FROM lists WHERE uuid='${uuid}'`
   );
 
@@ -98,7 +98,7 @@ async function remove(uuid){
 }
 
 async function addItem(uuid, item){
-  const result = await db.query(
+  const [result] = await db.query(
     `INSERT INTO items 
      SET name = '${item.name}',
          list_id = (
@@ -122,7 +122,7 @@ async function addItem(uuid, item){
 }
 
 async function removeItem(uuid, itemId){
-  const result = await db.query(
+  const [result] = await db.query(
     `DELETE FROM items WHERE id='${itemId}'`
   );
 
