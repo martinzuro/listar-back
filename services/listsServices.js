@@ -1,6 +1,7 @@
 const pool = require('./pool');
 const helper = require('../helper');
 const config = require('../config');
+const ably = require('./ably');
 
 async function getMultiple(page = 1){
   const offset = helper.getOffset(page, config.listPerPage);
@@ -118,6 +119,8 @@ async function addItem(uuid, item){
       id: result.rows[0].id,
       name: item.name,
     };
+    const channel = ably.channels.get(`channel-${uuid}`);
+    await channel.publish('add-item', { item: data });
   }
 
   return {message, data};
@@ -133,6 +136,8 @@ async function removeItem(uuid, itemId){
 
   if (result.rowCount) {
     message = 'List updated successfully';
+    const channel = ably.channels.get(`channel-${uuid}`);
+    await channel.publish('remove-item', { item: {id: itemId} });
   }
 
   return {message};
