@@ -1,6 +1,6 @@
 const Ably = require('ably');
 
-const ably = new Ably.Realtime.Promise('PEc6bw.-PeguQ:J46g6vuY1Qg0w28m2GCqC3x65kZQRe4BBj5ik2D4lC0');
+const ably = new Ably.Realtime.Promise(process.env.ABLY_API_KEY);
 connectToAbly(ably);
 
 async function connectToAbly(ably) {

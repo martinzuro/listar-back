@@ -137,7 +137,7 @@ async function removeItem(uuid, itemId){
   if (result.rowCount) {
     message = 'List updated successfully';
     const channel = ably.channels.get(`channel-${uuid}`);
-    await channel.publish('remove-item', { item: {id: itemId} });
+    await channel.publish('remove-item', { item: {id: parseInt(itemId)} });
   }
 
   return {message};
