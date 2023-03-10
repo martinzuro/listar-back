@@ -1,14 +1,15 @@
-const db = require('./db');
+const pool = require('./pool');
 const helper = require('../helper');
 const config = require('../config');
 
 async function getMultiple(page = 1){
   const offset = helper.getOffset(page, config.listPerPage);
-  const [rows] = await db.query(
+  const result = await pool.query(
     `SELECT uuid, title 
-    FROM lists LIMIT ${offset},${config.listPerPage}`
+    FROM lists LIMIT $1,$2`,
+    [offset, config.listPerPage]
   );
-  const data = helper.emptyOrRows(rows);
+  const data = helper.emptyOrRows(result.rows);
   const meta = {page};
 
   return {
@@ -18,28 +19,30 @@ async function getMultiple(page = 1){
 }
 
 async function getOne(uuid){
-  const [lists] = await db.query(
+  const result = await pool.query(
     `SELECT * 
     FROM lists 
-    WHERE uuid='${uuid}'`
+    WHERE uuid = $1`,
+    [uuid]
   );
 
   let message = `Couldn't find list ${uuid}`;
-  if (lists.length == 0) {
+  if (result.rowCount == 0) {
     return { message, error: true };
   }
-  const list = lists[0];
+  const list = result.rows[0];
 
-  const [items] = await db.query(
+  const itemsResult = await pool.query(
     `SELECT * 
     FROM items 
-    WHERE list_id='${list.id}'`
+    WHERE list_id = $1`,
+    [list.id]
   );
 
   const data = {
     uuid: list.uuid,
     title: list.title,
-    items
+    items: itemsResult.rows
   }
 
   return {
@@ -48,19 +51,20 @@ async function getOne(uuid){
 }
 
 async function create(list){
-  const [result] = await db.query(
+  const result = await pool.query(
       `INSERT INTO lists 
       (title, uuid) 
       VALUES 
-      ('${list.title}', UUID())`
+      ($1, gen_random_uuid())
+      RETURNING *`,
+      [list.title]
   );
 
   let message = 'Error in creating list';
   let data = {};
-
-  if (result.affectedRows) {
-    const [rows] = await db.query(`SELECT * FROM lists WHERE id=${result.insertId}`);
-    data = rows[0];
+  
+  if (result.rowCount) {
+    data = result.rows[0];
     message = 'List created successfully';
   }
 
@@ -68,15 +72,16 @@ async function create(list){
 }
 
 async function update(uuid, list){
-  const [result] = await db.query(
+  const result = await pool.query(
     `UPDATE lists 
-    SET title="${list.title}"
-    WHERE uuid='${uuid}'` 
+    SET title = $1
+    WHERE uuid = $2`,
+    [list.title, uuid]
   );
 
   let message = 'Error in updating list';
 
-  if (result.affectedRows) {
+  if (result.rowCount) {
     message = 'List updated successfully';
   }
 
@@ -84,13 +89,14 @@ async function update(uuid, list){
 }
 
 async function remove(uuid){
-  const [result] = await db.query(
-    `DELETE FROM lists WHERE uuid='${uuid}'`
+  const result = await pool.query(
+    `DELETE FROM lists WHERE uuid = $1`,
+    [uuid]
   );
 
   let message = 'Error in deleting list';
 
-  if (result.affectedRows) {
+  if (result.rowCount) {
     message = 'List deleted successfully';
   }
 
@@ -98,22 +104,20 @@ async function remove(uuid){
 }
 
 async function addItem(uuid, item){
-  const [result] = await db.query(
-    `INSERT INTO items 
-     SET name = '${item.name}',
-         list_id = (
-         SELECT id
-           FROM lists
-          WHERE uuid = '${uuid}')`
+  const result = await pool.query(
+    `INSERT INTO items (name, list_id) VALUES ($1,(SELECT id FROM lists WHERE uuid = $2)) RETURNING *`,
+    [item.name, uuid]
   );
+  console.log('llega');
+  console.log(result);
 
   let message = 'Error in creating list item';
   let data = {};
 
-  if (result.affectedRows) {
+  if (result.rowCount) {
     message = 'List updated successfully';
     data = {
-      id: result.insertId,
+      id: result.rows[0].id,
       name: item.name,
     };
   }
@@ -122,13 +126,14 @@ async function addItem(uuid, item){
 }
 
 async function removeItem(uuid, itemId){
-  const [result] = await db.query(
-    `DELETE FROM items WHERE id='${itemId}'`
+  const result = await pool.query(
+    `DELETE FROM items WHERE id = $1`,
+    [itemId]
   );
 
   let message = 'Error in deleting list item';
 
-  if (result.affectedRows) {
+  if (result.rowCount) {
     message = 'List updated successfully';
   }
 

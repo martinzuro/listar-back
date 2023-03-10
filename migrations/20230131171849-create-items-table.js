@@ -17,12 +17,11 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db, callback) {
   db.createTable('items', {
     columns: {
-      id: { type: 'int', primaryKey: true, unsigned: true, notNull: true, autoIncrement: true, length: 10 },
+      id: { type: 'int', primaryKey: true, unsigned: true, notNull: true, autoIncrement: true },
       name: { type: 'string', notNull: true },
       list_id: {
         type: 'int',
         unsigned: true,
-        length: 10,
         notNull: true,
         foreignKey: {
           name: 'items_list_id_fk',

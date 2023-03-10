@@ -17,7 +17,7 @@ exports.setup = function(options, seedLink) {
 exports.up = function(db, callback) {
   db.createTable('lists', {
     columns: {
-      id: { type: 'int', primaryKey: true, unsigned: true, notNull: true, autoIncrement: true, length: 10 },
+      id: { type: 'int', primaryKey: true, unsigned: true, notNull: true, autoIncrement: true },
       uuid: { type: 'string', unique: true, notNull: true, length: 100 },
       title: { type: 'string', notNull: true },
     },
