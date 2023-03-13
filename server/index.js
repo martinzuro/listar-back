@@ -18,8 +18,6 @@ const corsOptions = {
     if (!origin || whitelist.indexOf(origin) !== -1) {
       callback(null, true)
     } else {
-      console.log('entra al else');
-      console.log(whitelist);
       callback(new Error("Not allowed by CORS"))
     }
   },

@@ -108,8 +108,6 @@ async function addItem(uuid, item){
     `INSERT INTO items (name, list_id) VALUES ($1,(SELECT id FROM lists WHERE uuid = $2)) RETURNING *`,
     [item.name, uuid]
   );
-  console.log('llega');
-  console.log(result);
 
   let message = 'Error in creating list item';
   let data = {};
